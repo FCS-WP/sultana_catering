@@ -1,0 +1,75 @@
+$zw-grid-columns: 12 !default;
+$zw-grid-breakpoints: (
+  xs: map-get($grid-breakpoints, xs),
+  md: map-get($grid-breakpoints, md),
+  lg: map-get($grid-breakpoints, lg),
+  xl: map-get($grid-breakpoints, xl),
+) !default;
+
+@mixin zw-media-up($breakpoint) {
+  $min-width: map-get($zw-grid-breakpoints, $breakpoint);
+
+  @if $min-width == null or $min-width == 0 {
+    @content;
+  } @else {
+    @media (min-width: $min-width) {
+      @content;
+    }
+  }
+}
+
+.container,
+.container-sm,
+.container-md,
+.container-lg,
+.container-xl,
+.container-xxl {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: calc(#{$grid-gutter-width} * 0.5);
+  padding-right: calc(#{$grid-gutter-width} * 0.5);
+}
+
+
+@mixin zw-generate-columns($breakpoint) {
+  $infix: "";
+
+  @if $breakpoint != xs {
+    $infix: "-#{$breakpoint}";
+  }
+
+  @include zw-media-up($breakpoint) {
+    .col#{$infix} {
+      flex: 1 0 0%;
+    }
+
+    .col#{$infix}-auto {
+      flex: 0 0 auto;
+      width: auto;
+    }
+
+    @for $index from 1 through $zw-grid-columns {
+      .col#{$infix}-#{$index} {
+        flex: 0 0 auto;
+        width: percentage($index / $zw-grid-columns);
+      }
+    }
+
+    @each $key, $value in $spacers {
+      .g#{$infix}-#{$key},
+      .gx#{$infix}-#{$key} {
+        --zw-gutter-x: #{$value};
+      }
+
+      .g#{$infix}-#{$key},
+      .gy#{$infix}-#{$key} {
+        --zw-gutter-y: #{$value};
+      }
+    }
+  }
+}
+
+@each $breakpoint, $value in $zw-grid-breakpoints {
+  @include zw-generate-columns($breakpoint);
+}

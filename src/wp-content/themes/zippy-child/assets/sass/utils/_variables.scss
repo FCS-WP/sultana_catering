@@ -1,0 +1,151 @@
+@import "mixin";
+@import "../fonts/fonts";
+$font-family-sans-serif: "Open Sans", sans-serif !default;
+$font-family-sans-serif-heading: "Proxima Nova", sans-serif !default;
+
+$font-size-base: 1rem !default;
+$h1-font-size: $font-size-base * 2.5 !default;
+$h2-font-size: $font-size-base * 2.1875 !default;
+$h3-font-size: $font-size-base * 1.625 !default;
+$h4-font-size: $font-size-base * 1.5 !default;
+$h5-font-size: $font-size-base * 1.375 !default;
+$h6-font-size: $font-size-base * 1.125 !default;
+$font-size-sm: $font-size-base * 0.875 !default;
+$font-size-xs: $font-size-base * 0.75 !default;
+
+$font-sizes: (
+  1: $h1-font-size,
+  2: $h2-font-size,
+  3: $h3-font-size,
+  4: $h4-font-size,
+  5: $h5-font-size,
+  6: $h6-font-size,
+  sm: $font-size-sm,
+  xs: $font-size-xs,
+) !default;
+
+$primary: #dd6923 !default;
+$primary-strong: #1a2d1a !default;
+$yellow: #f5a62e !default;
+$primary-soft: #e5e2db !default;
+
+$surface: #efedeb !default;
+$surface-low: #e8e4de !default;
+$surface-card: #ffffff !default;
+$surface-high: #ded9d1 !default;
+$surface-strong: #cfc8be !default;
+
+$ink: #2f2b26 !default;
+$muted: #6d665d !default;
+$outline: #b6aea2 !default;
+$dark: #102b10 !default;
+$dark-soft: #173817 !default;
+
+$white: #ffffff !default;
+$black: #000000 !default;
+$site-container-max: 1280px !default;
+
+$font-family-base: "Open Sans", Arial, sans-serif !default;
+$headings-font-family: "Proxima Nova", "Open Sans", Arial, sans-serif !default;
+$headings-color: $ink !default;
+$body-color: $ink !default;
+$body-bg: $surface !default;
+$border-color: $outline !default;
+$border-radius: 14px !default;
+$border-radius-lg: 20px !default;
+$border-radius-xl: 28px !default;
+$btn-font-family: $headings-font-family !default;
+$btn-font-weight: 600 !default;
+$btn-padding-y: 0.625rem !default;
+$btn-padding-x: 1.5rem !default;
+$btn-border-radius: 999px !default;
+$grid-gutter-width: 1.5rem !default;
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1400px,
+) !default;
+$container-max-widths: (
+  sm: 540px,
+  md: 720px,
+  lg: 960px,
+  xl: 1140px,
+  xxl: $site-container-max,
+) !default;
+
+$theme-colors: () !default;
+$theme-colors: map-merge(
+  (
+    "primary": $primary,
+    "primary-strong": $primary-strong,
+    "primary-soft": $primary-soft,
+    "surface": $surface,
+    "surface-low": $surface-low,
+    "surface-card": $surface-card,
+    "ink": $ink,
+    "muted": $muted,
+    "outline": $outline,
+    "dark": $dark,
+    "dark-soft": $dark-soft,
+    "white": $white,
+    "black": $black,
+  ),
+  $theme-colors
+);
+
+$spacer: 0.625rem !default;
+$spacers: (
+  0: 0,
+  1: $spacer,
+  2: $spacer * 2,
+  3: $spacer * 3,
+  4: $spacer * 4,
+  5: $spacer * 5,
+  sm: $spacer * 0.5,
+  md: $spacer * 1.5,
+  lg: $spacer * 2.5,
+  xl: $spacer * 4,
+  gutter: 32px,
+) !default;
+
+:root {
+  --zippy-site-container-max: #{$site-container-max};
+  --zippy-font-heading: "Proxima Nova", sans-serif;
+  --zippy-font-body: "Open Sans", sans-serif;
+
+  /* Simple website color tokens. */
+  --primary: #{$primary};
+  --primary-rgb: 221, 105, 35;
+  --secondary: #{$primary-strong};
+  --yellow: #{$yellow};
+  --accent: #{$primary-soft};
+  --bg: #{$surface};
+  --bg-low: #{$surface-low};
+  --card: #{$surface-card};
+  --bg-high: #{$surface-high};
+  --bg-strong: #{$surface-strong};
+  --text: #{$ink};
+  --muted: #{$muted};
+  --border: #{$outline};
+  --dark: #{$dark};
+  --dark-soft: #{$dark-soft};
+  --white: #{$white};
+  --black: #{$black};
+
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --radius-sm: 8px;
+
+  --shadow: 0 24px 60px rgba(17, 24, 24, 0.08);
+  --shadow-soft: 0 16px 40px rgba(17, 24, 24, 0.06);
+  --gradient: linear-gradient(135deg, #{$primary} 0%, #{$primary-soft} 100%);
+
+  --button-primary-text: #fff8f3;
+  --button-primary-shadow: 0 16px 32px rgba(210, 83, 51, 0.22);
+  --button-primary-hover-bg: #bf492c;
+  --button-secondary-border: rgba(182, 174, 162, 0.35);
+  --button-ghost-light-border: rgba(255, 255, 255, 0.3);
+}

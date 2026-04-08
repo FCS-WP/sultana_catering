@@ -1,16 +1,6 @@
 
 
 /* Font face for web template */
-@include font-face("Open Sans", "#{$assets_path}fonts/Arial/SVN-Arial-Regular", 500);
-@include font-face("Open Sans", "#{$assets_path}fonts/Arial/SVN-Arial-Bold", 900);
-@include font-face("Open Sans", "#{$assets_path}fonts/Arial/SVN-Arial-Italic", 500);
-@include font-face("Open Sans", "#{$assets_path}fonts/Arial/SVN-Arial-Bold-Italic", 900);
-html * {
-  // background: url(../../img/background.jpg);
-  background-size: cover;
-  font-family: 'Open Sans', serif !important;
-  // font-weight: 400;
-}
-// body {
-//   font-family: "Arial", serif !important;
-// }
+@include font-face("Proxima-Nova", "#{$assets_path}fonts/Proxima-Nova/ProximaNovaT-Thin", 500);
+@include font-face("Proxima-Nova", "#{$assets_path}fonts/Proxima-Nova/Proxima-Nova-Bold", 900);
+@include font-face("Open-Sans", "#{$assets_path}fonts/Open-Sans/OpenSans-Regular", 500);
