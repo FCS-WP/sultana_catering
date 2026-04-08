@@ -1,0 +1,215 @@
+.zippy-home-hero {
+  min-height: 450px;
+  margin-bottom: 50px;
+  border-radius: 30px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  &__badge {
+    width: min(78%, 710px);
+    padding: 50px 30px;
+    border-radius: var(--radius-lg);
+    background-color: var(--primary);
+    color: var(--white);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+  }
+
+  &__title {
+    margin: 0 0 20px;
+    color: var(--white);
+    font-size: clamp(32px, 3vw, 42px);
+    font-weight: 800;
+    line-height: 1.06;
+    letter-spacing: 0.015em;
+    text-transform: uppercase;
+  }
+
+  &__button {
+    min-width: 170px;
+    min-height: 58px;
+    padding: 0 24px;
+    font-size: clamp(16px, 3vw, 20px);
+  }
+}
+
+.zippy-home-about {
+  margin-bottom: 50px;
+
+  &__title {
+    margin: 0;
+    color: var(--primary);
+    font-size: clamp(48px, 5vw, 60px);
+    font-weight: 800;
+    line-height: 1.06;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  &__description {
+    color: var(--primary);
+    font-family: var(--zippy-font-body);
+    font-size: clamp(16px, 3vw, 18px);
+    font-weight: 600;
+    line-height: 1.32;
+
+    p {
+      margin: 0;
+    }
+  }
+}
+
+.zippy-home-promotions {
+  margin-bottom: 24px;
+  padding: 48px 46px 40px;
+  border-radius: var(--radius-lg);
+  background: var(--secondary);
+
+  &__title {
+    margin: 0 0 34px;
+    color: var(--white);
+    font-size: clamp(32px, 3vw, 42px);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 0.01em;
+    text-align: center;
+    text-transform: uppercase;
+  }
+}
+
+.zippy-home-promo-card {
+  min-height: 212px;
+  padding: 40px 12px 18px;
+  border-radius: 10px;
+  background: #f0ece7;
+
+  &__title,
+  &__subtitle {
+    margin: 0;
+    color: var(--primary);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+  }
+
+  &__title {
+    margin-top: 8px;
+    margin-bottom: 2px;
+    font-size: clamp(1.375rem, 2.6vw, 2.5rem);
+  }
+
+  &__subtitle {
+    margin-bottom: 8px;
+    font-size: clamp(0.875rem, 1.3vw, 1.4375rem);
+  }
+
+  &__body {
+    margin: 0;
+    color: #1f1f1f;
+    font-size: clamp(0.625rem, 1vw, 1.125rem);
+    font-weight: 500;
+    line-height: 1.2;
+  }
+}
+
+.zippy-home-promo-icon {
+  top: -28px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--yellow);
+  color: var(--white);
+
+  img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+  }
+}
+
+.zippy-home-tabs {
+  gap: 30px;
+  margin-bottom: 50px;
+  overflow-x: auto;
+  border-bottom: 2px solid var(--secondary);
+
+  &__icon {
+    width: 32px;
+    height: 32px;
+    color: var(--secondary);
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+
+.zippy-home-tab {
+  margin: 0;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: #1f1f1f;
+  font-family: var(--zippy-font-heading);
+  font-size: clamp(16px, 3vw, 18px);
+  font-weight: 600;
+  text-transform: capitalize;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+
+  &.is-active {
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+}
+
+.zippy-home-products {
+  margin-bottom: 56px;
+
+  &--secondary {
+    margin-bottom: 22px;
+  }
+}
+
+.zippy-home-section-head {
+  margin-bottom: 22px;
+
+  &__title {
+    margin: 0;
+    margin-bottom: 10px;
+    color: var(--primary);
+    font-size: clamp(24px, 3vw, 32px);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 0.01em;
+    text-transform: capitalize;
+  }
+
+  &__subtitle {
+    margin: 4px 0 0;
+    color: #1f1f1f;
+    font-family: var(--zippy-font-body);
+    font-weight: 600;
+    line-height: 1.15;
+  }
+}
+
+.zippy-home-empty {
+  padding: 40px 24px;
+  border-radius: var(--radius-md);
+  background: #e5e2df;
+
+  &__text {
+    margin: 0;
+    color: var(--primary);
+    font-family: var(--zippy-font-heading);
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1;
+  }
+}

@@ -1,0 +1,54 @@
+.header-inner {
+  .flex-col {
+    &.hide-for-medium {
+      &.flex-right {
+        .nav-right {
+          gap: 20px;
+        }
+      }
+      &.flex-left {
+        &.flex-grow {
+          ul {
+            justify-content: flex-end;
+            gap: 20px;
+            padding-right: 50px;
+            li {
+              a {
+                text-transform: capitalize;
+                font-size: clamp(14px, 3vw, 16px);
+                font-weight: 500;
+              }
+              &.active {
+                a {
+                  color: var(--primary);
+                }
+              }
+            }
+          }
+        }
+      }
+      i {
+        color: var(--primary);
+        font-size: clamp(16px, 3vw, 18px);
+        &.icon-search {
+          font-size: clamp(16px, 3vw, 18px);
+        }
+      }
+    }
+  }
+  .logo img {
+    height: 70px;
+    object-fit: contain;
+  }
+}
+.header.show-on-scroll,
+.stuck .header-main {
+  background-color: white;
+}
+.nav-top-not-logged-in.icon.button {
+  &:hover {
+    i {
+      color: var(--white);
+    }
+  }
+}

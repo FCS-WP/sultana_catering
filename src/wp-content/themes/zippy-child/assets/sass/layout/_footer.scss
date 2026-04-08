@@ -1,0 +1,24 @@
+.absolute-footer {
+  display: none !important;
+}
+.footer-wrapper {
+  .col {
+    padding-bottom: 0px !important;
+  }
+  .ux-logo {
+    margin-bottom: 10px;
+    .ux-logo-link {
+      padding: 0 !important;
+      img {
+        border-radius: 16px;
+      }
+    }
+  }
+  .ux-menu {
+    .menu-item {
+      a {
+        color: var(--white);
+      }
+    }
+  }
+}

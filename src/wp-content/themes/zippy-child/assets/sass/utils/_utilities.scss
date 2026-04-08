@@ -1,0 +1,270 @@
+$zw-utilities: (
+  "font-family": (
+    property: font-family,
+    class: font,
+    values: (
+      sans-serif: $font-family-sans-serif,
+      heading: $font-family-sans-serif-heading,
+    ),
+  ),
+  "font-size": (
+    property: font-size,
+    class: fs,
+    values: $font-sizes,
+  ),
+  "background-color": (
+    property: background-color,
+    class: bg,
+    values: $theme-colors,
+  ),
+  "color": (
+    property: color,
+    class: text,
+    values: $theme-colors,
+  ),
+  "display": (
+    property: display,
+    class: d,
+    values: (
+      none: none,
+      block: block,
+      grid: grid,
+      flex: flex,
+      inline-flex: inline-flex,
+    ),
+  ),
+  "justify-content": (
+    property: justify-content,
+    class: justify-content,
+    values: (
+      start: flex-start,
+      center: center,
+      end: flex-end,
+      between: space-between,
+    ),
+  ),
+  "flex-direction": (
+    property: flex-direction,
+    class: flex,
+    values: (
+      row: row,
+      column: column,
+    ),
+  ),
+  "flex-grow": (
+    property: flex-grow,
+    class: flex-grow,
+    values: (
+      0: 0,
+      1: 1,
+    ),
+  ),
+  "flex-shrink": (
+    property: flex-shrink,
+    class: flex-shrink,
+    values: (
+      0: 0,
+      1: 1,
+    ),
+  ),
+  "align-items": (
+    property: align-items,
+    class: align-items,
+    values: (
+      start: flex-start,
+      center: center,
+      end: flex-end,
+      stretch: stretch,
+    ),
+  ),
+  "width": (
+    property: width,
+    class: w,
+    values: (
+      100: 100%,
+      auto: auto,
+    ),
+  ),
+  "height": (
+    property: height,
+    class: h,
+    values: (
+      100: 100%,
+      auto: auto,
+    ),
+  ),
+  "position": (
+    property: position,
+    class: position,
+    values: (
+      static: static,
+      relative: relative,
+      absolute: absolute,
+    ),
+  ),
+  "top": (
+    property: top,
+    class: top,
+    values: (
+      0: 0,
+      50: 50%,
+    ),
+  ),
+  "start": (
+    property: left,
+    class: start,
+    values: (
+      0: 0,
+      50: 50%,
+    ),
+  ),
+  "translate": (
+    property: transform,
+    class: translate,
+    values: (
+      middle: translate(-50%, -50%),
+      middle-x: translateX(-50%),
+    ),
+  ),
+  "overflow": (
+    property: overflow,
+    class: overflow,
+    values: (
+      hidden: hidden,
+      auto: auto,
+    ),
+  ),
+  "text-align": (
+    property: text-align,
+    class: text,
+    values: (
+      start: left,
+      center: center,
+      end: right,
+    ),
+  ),
+  "text-transform": (
+    property: text-transform,
+    class: text,
+    values: (
+      uppercase: uppercase,
+      lowercase: lowercase,
+      none: none,
+    ),
+  ),
+  "pointer-events": (
+    property: pointer-events,
+    class: pe,
+    values: (
+      none: none,
+      auto: auto,
+    ),
+  ),
+  "opacity": (
+    property: opacity,
+    class: opacity,
+    values: (
+      0: 0,
+      25: 0.25,
+      50: 0.5,
+      75: 0.75,
+      100: 1,
+    ),
+  ),
+);
+
+@mixin zw-generate-utility($utility-map) {
+  $property: map-get($utility-map, property);
+  $class: map-get($utility-map, class);
+  $values: map-get($utility-map, values);
+
+  @if $property != null and $class != null and $values != null {
+    @each $key, $value in $values {
+      .#{$class}-#{$key} {
+        #{$property}: #{$value} !important;
+      }
+    }
+  }
+}
+
+@mixin zw-generate-spacing-utilities($infix: "") {
+  @each $key, $value in $spacers {
+    .m#{$infix}-#{$key} {
+      margin: #{$value} !important;
+    }
+
+    .mx#{$infix}-#{$key} {
+      margin-left: #{$value} !important;
+      margin-right: #{$value} !important;
+    }
+
+    .my#{$infix}-#{$key} {
+      margin-top: #{$value} !important;
+      margin-bottom: #{$value} !important;
+    }
+
+    .mt#{$infix}-#{$key} {
+      margin-top: #{$value} !important;
+    }
+
+    .mb#{$infix}-#{$key} {
+      margin-bottom: #{$value} !important;
+    }
+
+    .ml#{$infix}-#{$key} {
+      margin-left: #{$value} !important;
+    }
+
+    .mr#{$infix}-#{$key} {
+      margin-right: #{$value} !important;
+    }
+
+    .p#{$infix}-#{$key} {
+      padding: #{$value} !important;
+    }
+
+    .px#{$infix}-#{$key} {
+      padding-left: #{$value} !important;
+      padding-right: #{$value} !important;
+    }
+
+    .py#{$infix}-#{$key} {
+      padding-top: #{$value} !important;
+      padding-bottom: #{$value} !important;
+    }
+
+    .pt#{$infix}-#{$key} {
+      padding-top: #{$value} !important;
+    }
+
+    .pb#{$infix}-#{$key} {
+      padding-bottom: #{$value} !important;
+    }
+
+    .pl#{$infix}-#{$key} {
+      padding-left: #{$value} !important;
+    }
+
+    .pr#{$infix}-#{$key} {
+      padding-right: #{$value} !important;
+    }
+  }
+}
+
+@mixin zw-generate-utilities() {
+  @each $name, $utility-map in $zw-utilities {
+    @include zw-generate-utility($utility-map);
+  }
+
+  @include zw-generate-spacing-utilities();
+
+  @each $breakpoint, $value in $zw-grid-breakpoints {
+    @if $breakpoint != xs {
+      @include zw-media-up($breakpoint) {
+        @include zw-generate-spacing-utilities("-#{$breakpoint}");
+      }
+    }
+  }
+}
+
+@include zw-generate-utilities();

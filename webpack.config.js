@@ -1,3 +1,4 @@
+const fs = require("fs");
 const path = require("path");
 const webpack = require("webpack");
 // Init Config Webpack
@@ -12,25 +13,86 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 // Define Theme name
 const themeName = process.env.THEME_NAME ? process.env.THEME_NAME : "zippy";
-const destChildTheme = "./src/wp-content/themes/" + themeName + "-child";
+const childThemeDir = path.resolve(
+  __dirname,
+  "src",
+  "wp-content",
+  "themes",
+  `${themeName}-child`
+);
 const localDomain = process.env.PROJECT_HOST
   ? process.env.PROJECT_HOST
   : "http://localhost:68";
 
-// Define Work path
-const destFileCss = destChildTheme + "/assets/sass/app.scss";
-const destFileJs = destChildTheme + "/assets/js/app.js";
-const destOutput = destChildTheme + "/assets/dist";
+const assetsDir = path.join(childThemeDir, "assets");
+const jsDir = path.join(assetsDir, "js");
+const sassDir = path.join(assetsDir, "sass");
+const outputDir = path.join(assetsDir, "dist");
 
+function readEntryNames(directory, extension) {
+  if (!fs.existsSync(directory)) {
+    return [];
+  }
+
+  return fs
+    .readdirSync(directory)
+    .filter((filename) => filename.endsWith(extension))
+    .map((filename) => filename.slice(0, -extension.length));
+}
+
+function addEntry(entries, name, jsPath, scssPath) {
+  const files = [];
+
+  if (fs.existsSync(scssPath)) {
+    files.push(scssPath);
+  }
+
+  if (fs.existsSync(jsPath)) {
+    files.push(jsPath);
+  }
+
+  if (files.length > 0) {
+    entries[name] = files;
+  }
+}
+
+function buildEntries() {
+  const entries = {};
+
+  addEntry(
+    entries,
+    "app",
+    path.join(jsDir, "app.js"),
+    path.join(sassDir, "app.scss")
+  );
+
+  const pageJsDir = path.join(jsDir, "pages");
+  const pageScssDir = path.join(sassDir, "pages");
+  const pageNames = new Set([
+    ...readEntryNames(pageJsDir, ".js"),
+    ...readEntryNames(pageScssDir, ".scss"),
+  ]);
+
+  pageNames.forEach((pageName) => {
+    addEntry(
+      entries,
+      pageName,
+      path.join(pageJsDir, `${pageName}.js`),
+      path.join(pageScssDir, `${pageName}.scss`)
+    );
+  });
+
+  return entries;
+}
+
+const entries = buildEntries();
 module.exports = [
   {
     stats: "minimal",
-    entry: {
-      main: [destFileCss, destFileJs],
-    },
+    entry: entries,
     output: {
-      filename: destOutput + "/js/[name].min.js",
-      path: path.resolve(__dirname),
+      filename: "js/[name].min.js",
+      path: outputDir,
     },
     module: {
       rules: [
@@ -50,13 +112,20 @@ module.exports = [
               options: { url: false },
             },
             {
+              loader: "postcss-loader",
+              options: {
+                sourceMap: true,
+              },
+            },
+            {
               loader: "sass-loader",
               options: {
+                api: "modern",
                 sourceMap: true,
                 sassOptions: {
                   outputStyle: "compressed",
+                  includePaths: [path.resolve(__dirname, "node_modules")],
                 },
-                additionalData: `@import "${destChildTheme}/assets/sass/_mixins";`,
               },
             },
           ],
@@ -66,7 +135,6 @@ module.exports = [
           test: /\.(woff|woff2|ttf|otf)$/,
           loader: "file-loader",
           include: path.resolve(__dirname, "../"),
-
           options: {
             name: "[hash].[ext]",
             outputPath: "fonts/",
@@ -77,23 +145,18 @@ module.exports = [
           test: /\.(png|jpg|gif)$/,
           type: "asset/resource",
           generator: {
-            filename: destOutput + "/build/img/[name][ext]",
+            filename: "img/[name][ext]",
           },
         },
       ],
     },
     plugins: [
-      // Get ENV Variables
-      // clear out build directories on each build
       new CleanWebpackPlugin({
-        cleanOnceBeforeBuildPatterns: [
-          destOutput + "/css/*",
-          destOutput + "/js/*",
-        ],
+        cleanOnceBeforeBuildPatterns: ["css/*", "js/*", "img/*", "fonts/*"],
       }),
       // css extraction into dedicated file
       new MiniCssExtractPlugin({
-        filename: destOutput + "/css/main.min.css",
+        filename: "css/[name].min.css",
       }),
       new webpack.ProvidePlugin({
         $: "jquery",
@@ -103,10 +166,9 @@ module.exports = [
         {
           proxy: localDomain,
           files: [
-            destOutput + "/*/*.css",
-            destOutput + "/*/*.js",
-            destChildTheme + "/*.php",
-            destChildTheme + "/*/*.php",
+            path.join(outputDir, "css/*.css"),
+            path.join(outputDir, "js/*.js"),
+            path.join(childThemeDir, "**/*.php"),
           ],
           injectCss: true,
         },

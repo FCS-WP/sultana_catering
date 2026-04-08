@@ -1,8 +1,9 @@
 /*
-  use  ../../path_to_font =  Theme-child
+  use  ../../path_to_font = Theme-child
 */
 
 $assets_path: "../../" !default;
+
 /*
 Button background color
 */
@@ -16,17 +17,6 @@ Button background color
     background-color: darken($bg, 25%);
   }
 }
-
-/*
-String Replace
-*/
-// @function str-replace($string, $search, $replace: "") {
-//     $index: str-index($string, $search);
-//     @if $index {
-//         @return str-slice($string, 1, $index - 1)+$replace+str-replace(str-slice($string, $index + str-length($search)), $search, $replace);
-//     }
-//     @return $string;
-// }
 
 /*
 Font Face
@@ -65,7 +55,7 @@ Font Face
     font-style: $style;
     font-weight: $weight;
     src: $src;
-    font-display: swap; /* or block, swap, fallback, optional */
+    font-display: swap;
   }
 }
 
@@ -80,6 +70,7 @@ Cut text
   display: -webkit-box;
   -webkit-box-orient: vertical;
 }
+
 @mixin limit-line {
   width: 100%;
   overflow: hidden;
@@ -96,6 +87,7 @@ flexbox
   justify-content: $x-justify;
   align-items: $y-align;
 }
+
 // Transition
 @mixin transition($what: all, $time: 0.2s, $how: ease-in-out) {
   -webkit-transition: $what $time $how;
@@ -113,6 +105,7 @@ flexbox
   -webkit-transform: $transforms;
   transform: $transforms;
 }
+
 // rotate
 @mixin rotate($deg) {
   @include transform(rotate(#{$deg}deg));
@@ -122,15 +115,18 @@ flexbox
 @mixin scale($scale) {
   @include transform(scale($scale));
 }
+
 // translate
 @mixin translate($x, $y) {
   @include transform(translate($x, $y));
 }
+
 // skew
 @mixin skew($x, $y) {
   @include transform(skew(#{$x}deg, #{$y}deg));
 }
-//transform origin
+
+// transform origin
 @mixin transform-origin($origin) {
   moz-transform-origin: $origin;
   -o-transform-origin: $origin;
@@ -138,29 +134,70 @@ flexbox
   -webkit-transform-origin: $origin;
   transform-origin: $origin;
 }
+
 /*=== MEDIA QUERY ===*/
 @mixin mobile-xs {
   @media (min-width: 400px) {
     @content;
   }
 }
+
 @mixin mobile {
   @media (min-width: 480px) {
     @content;
   }
 }
+
 @mixin tablet {
   @media (min-width: 768px) {
     @content;
   }
 }
+
 @mixin desktop {
   @media (min-width: 992px) {
     @content;
   }
 }
+
 @mixin large-desktop {
   @media (min-width: 1200px) {
     @content;
   }
+}
+
+@mixin add-container($nameContainer, $max-width: 1280px, $padding-x: 16px) {
+  #{$nameContainer} {
+    width: min(#{$max-width}, calc(100% - (#{$padding-x} * 2)));
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@mixin border-radius($radius: 20px, $fallback-border-radius: false) {
+  @if $radius != null {
+    border-radius: $radius;
+  } @else if $fallback-border-radius != false {
+    border-radius: $fallback-border-radius;
+  }
+}
+
+@mixin border-top-radius($radius: 20px) {
+  border-top-left-radius: $radius;
+  border-top-right-radius: $radius;
+}
+
+@mixin border-end-radius($radius: 20px) {
+  border-top-right-radius: $radius;
+  border-bottom-right-radius: $radius;
+}
+
+@mixin border-bottom-radius($radius: 20px) {
+  border-bottom-right-radius: $radius;
+  border-bottom-left-radius: $radius;
+}
+
+@mixin border-start-radius($radius: 20px) {
+  border-top-left-radius: $radius;
+  border-bottom-left-radius: $radius;
 }
