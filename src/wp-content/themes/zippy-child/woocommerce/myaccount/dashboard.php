@@ -55,6 +55,17 @@ $allowed_html = array(
                 </a>
             </div>
             <div class="item_tab_myaccount">
+                <a href="<?php echo esc_url( wc_get_endpoint_url( 'my-favourites' ) ) ?>">
+                    <div class="icon_item">
+                        <i class="icon-heart"></i>
+                    </div>
+                    <div class="content_item">
+                        <h5>My Favourites</h5>
+                        <p>View your saved items</p>
+                    </div>
+                </a>
+            </div>
+            <div class="item_tab_myaccount">
                 <a href="<?php echo esc_url( wc_get_endpoint_url( 'edit-address' )) ?>">
                     <div class="icon_item">
                         <i class="icon-map-pin-fill"></i>
