@@ -16,7 +16,13 @@ function format_price($price)
 function is_existing_shipping()
 {
     if (is_admin()) return false;
-    if (!function_exists('WC') || !WC()->session) return false;
+    if (!function_exists('WC')) return false;
+
+    if (!WC()->session && method_exists(WC(), 'initialize_session')) {
+        WC()->initialize_session();
+    }
+
+    if (!WC()->session) return false;
     return !empty(WC()->session->get('order_mode'));
 }
 

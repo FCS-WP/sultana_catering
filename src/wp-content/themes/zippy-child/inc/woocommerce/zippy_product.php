@@ -47,3 +47,74 @@ function get_minimum_price_for_combo($product)
     $price = min($price_range);
     return wc_price($price);
 }
+
+function zippy_child_loop_add_to_cart_button($product = null)
+{
+    if (!$product) {
+        global $product;
+    }
+
+    if (!$product instanceof WC_Product) {
+        return;
+    }
+
+    $product_id = $product->get_id();
+
+    if ($product->is_virtual()) {
+        $contact_url = function_exists('build_whatsapp_link')
+            ? build_whatsapp_link($product)
+            : get_permalink($product_id);
+
+        printf(
+            '<a class="whatsapp_product_btn" target="_blank" href="%s">%s</a>',
+            esc_url($contact_url),
+            esc_html__('Contact for Sale', 'zippy-child')
+        );
+        return;
+    }
+
+    if (!is_existing_shipping()) {
+        printf(
+            '<a class="zippy-shop-add-cart lightbox-zippy-btn" data-product_id="%d" href="#lightbox-zippy-form">%s</a>',
+            esc_attr($product_id),
+            esc_html($product->add_to_cart_text())
+        );
+        return;
+    }
+
+    $classes = 'zippy-home-add-cart zippy-shop-add-cart product_type_' . $product->get_type() . ' add_to_cart_button';
+
+    if ($product->supports('ajax_add_to_cart')) {
+        $classes .= ' ajax_add_to_cart';
+    }
+
+    if (!$product->is_purchasable() || !$product->is_in_stock()) {
+        $classes .= ' disabled';
+    }
+
+    printf(
+        '<a href="%1$s" data-quantity="1" class="%2$s" data-product_id="%3$d" data-product-id="%3$d" data-product_sku="%4$s" data-product-url="%1$s" data-woo-button-classes="%5$s" aria-label="%6$s" rel="nofollow">%7$s</a>',
+        esc_url($product->add_to_cart_url()),
+        esc_attr($classes),
+        esc_attr($product_id),
+        esc_attr($product->get_sku()),
+        esc_attr($classes),
+        esc_attr($product->add_to_cart_description()),
+        esc_html($product->add_to_cart_text())
+    );
+}
+
+function zippy_child_product_box_after_add_to_cart()
+{
+    global $product;
+
+    echo '<div class="zippy-shop-actions">';
+    zippy_child_loop_add_to_cart_button($product);
+    echo '</div>';
+}
+
+add_action('wp', function () {
+    remove_action('flatsome_product_box_actions', 'flatsome_lightbox_button', 50);
+    remove_action('flatsome_product_box_after', 'flatsome_woocommerce_shop_loop_button', 100);
+    add_action('flatsome_product_box_after', 'zippy_child_product_box_after_add_to_cart', 90);
+});

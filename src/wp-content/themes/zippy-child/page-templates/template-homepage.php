@@ -126,6 +126,9 @@ $render_product_card_grid = function ($cards, $section_key) use ($cart_url) {
             if ($product && $product->supports('ajax_add_to_cart')) {
                 $woo_button_classes .= ' ajax_add_to_cart';
             }
+            $has_existing_shipping = function_exists('is_existing_shipping') && is_existing_shipping();
+            $add_to_cart_action_class = $has_existing_shipping ? $woo_button_classes : 'lightbox-zippy-btn';
+            $button_href = $has_existing_shipping ? $add_to_cart_href : '#lightbox-zippy-form';
             $add_disabled_classes = $is_add_to_cart_disabled ? ' is-disabled disabled pe-none opacity-50' : '';
             ?>
             <div class="col-12 col-lg-6 d-flex p-1">
@@ -180,12 +183,16 @@ $render_product_card_grid = function ($cards, $section_key) use ($cart_url) {
                             </div>
 
                             <a
-                                class="zippy-home-add-cart zippy-button lightbox-zippy-btn <?php echo esc_attr($add_disabled_classes); ?>"
-                                href="#lightbox-zippy-form"
+                                class="zippy-home-add-cart zippy-button <?php echo esc_attr($add_to_cart_action_class . $add_disabled_classes); ?>"
+                                href="<?php echo esc_url($button_href); ?>"
+                                <?php if ($has_existing_shipping) : ?>
+                                data-add-cart
+                                <?php endif; ?>
                                 data-product-id="<?php echo esc_attr($product_id); ?>"
                                 data-product_id="<?php echo esc_attr($product_id); ?>"
                                 data-product_sku="<?php echo esc_attr($product_sku); ?>"
                                 data-product-url="<?php echo esc_url($add_to_cart_href); ?>"
+                                data-woo-button-classes="<?php echo esc_attr($woo_button_classes); ?>"
                                 data-quantity="<?php echo esc_attr(max(1, $qty_min)); ?>"
                                 data-qty-input-id="<?php echo esc_attr($qty_input_id); ?>"
                                 rel="nofollow"

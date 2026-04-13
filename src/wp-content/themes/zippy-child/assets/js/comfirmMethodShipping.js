@@ -52,8 +52,17 @@ jQuery(document).ready(function ($) {
     });
   });
 
-  // Refresh mini cart when added items
-  $("body").on("added_to_cart", function() {
-      // standard WC event
+  $("body").on("added_to_cart", function(event, fragments, cartHash, $button) {
+    if (!$button || !$button.hasClass("zippy-home-add-cart")) {
+      return;
+    }
+
+    Swal.fire({
+      icon: "success",
+      title: "Success",
+      text: "Product added to cart!",
+      timer: 1500,
+      showConfirmButton: false,
+    });
   });
 });

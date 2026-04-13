@@ -49,7 +49,7 @@ if ($out_of_stock) $classes[] = 'out-of-stock';
 						</a>
 					<?php else: ?>
 						<?php if (is_existing_shipping()): ?>
-							<a class="quick-view" href="#quick-view" data-prod="<?php echo $product->get_id(); ?>" aria-label="<?php echo esc_attr($product->get_title()); ?>">
+							<a href="<?php echo esc_url(get_permalink($product->get_id())); ?>" aria-label="<?php echo esc_attr($product->get_title()); ?>">
 								<?php do_action('flatsome_woocommerce_shop_loop_images'); ?>
 							</a>
 						<?php else: ?>

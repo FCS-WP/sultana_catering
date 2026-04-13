@@ -176,6 +176,43 @@ h1,
 
     &-actions {
       gap: 12px;
+      flex-wrap: wrap;
+
+      .added_to_cart.wc-forward {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 128px;
+        height: 38px;
+        min-height: 38px;
+        margin: 0 !important;
+        padding: 0 18px;
+        border: 1px solid var(--primary);
+        border-radius: 999px;
+        background: var(--white);
+        color: var(--primary) !important;
+        font-family: var(--zippy-font-heading);
+        font-size: 0.875rem;
+        font-weight: 700;
+        line-height: 1;
+        letter-spacing: 0;
+        text-decoration: none !important;
+        text-transform: capitalize !important;
+        box-shadow: none !important;
+        transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+
+        &:hover,
+        &:focus {
+          border-color: var(--primary);
+          background: var(--primary);
+          color: var(--white) !important;
+        }
+
+        &::after {
+          display: none;
+          content: none;
+        }
+      }
     }
   }
 

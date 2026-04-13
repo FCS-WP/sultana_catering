@@ -1,18 +1,4 @@
 $(function () {
-  const apiToken = "FEhI30q7ySHtMfzvSDo6RkxZUDVaQ1BBU3lBcGhYS3BrQStIUT09";
-
-  const getApiHeaders = () => {
-    const headers = {
-      Authorization: `Bearer ${apiToken}`,
-    };
-
-    if (typeof admin_data !== "undefined" && admin_data.nonce) {
-      headers["X-WP-Nonce"] = admin_data.nonce;
-    }
-
-    return headers;
-  };
-
   const getQuantity = ($button) => {
     const inputId = $button.attr("data-qty-input-id");
     const quantity = inputId ? parseInt($(`#${inputId}`).val(), 10) : parseInt($button.attr("data-quantity"), 10);
@@ -20,59 +6,21 @@ $(function () {
     return Number.isFinite(quantity) && quantity > 0 ? quantity : 1;
   };
 
-  const getDeliveryAddress = (sessionData) => ({
-    address_name: sessionData.address_name || sessionData.delivery_address,
-    lat: sessionData.lat,
-    lng: sessionData.lng,
-    postal: sessionData.postal,
-    road_name: sessionData.road_name,
-    blk_no: sessionData.blk_no,
-    building: sessionData.building,
-  });
+  const hasOrderSession = (sessionData) => {
+    return Boolean(sessionData?.order_mode);
+  };
 
-  const hasSavedShipping = (sessionData) => {
-    if (!sessionData || !sessionData.order_mode || !sessionData.outlet_id || !sessionData.date || !sessionData.time) {
-      return false;
-    }
+  const getProductId = ($button) => {
+    const prod_id = $button.data("prod");
+    const product_id = $button.data("product_id") || $button.attr("data-product-id");
 
-    if (sessionData.order_mode !== "delivery") {
-      return true;
-    }
-
-    return Boolean(sessionData.delivery_address && sessionData.lat && sessionData.lng);
+    return prod_id ? prod_id : product_id;
   };
 
   const fetchCartSession = () => {
     return $.ajax({
       url: "/wp-json/zippy-addons/v1/get-cart-session",
       type: "GET",
-      xhrFields: {
-        withCredentials: true,
-      },
-    });
-  };
-
-  const addToCartWithSession = (productId, quantity, sessionData) => {
-    const params = {
-      product_id: String(productId),
-      quantity,
-      order_mode: sessionData.order_mode,
-      outlet_id: String(sessionData.outlet_id),
-      date: sessionData.date,
-      time: sessionData.time,
-      hide: false,
-    };
-
-    if (sessionData.order_mode === "delivery") {
-      params.delivery_address = getDeliveryAddress(sessionData);
-    }
-
-    return $.ajax({
-      url: "/wp-json/zippy-addons/v1/add-to-cart",
-      type: "POST",
-      data: JSON.stringify(params),
-      contentType: "application/json",
-      headers: getApiHeaders(),
       xhrFields: {
         withCredentials: true,
       },
@@ -100,14 +48,63 @@ $(function () {
     }, 10);
   };
 
-  $(document).on("click", ".lightbox-zippy-btn", async function (e) {
-    e.preventDefault();
- 
-    const prod_id = $(this).data("prod");
-    const product_id = $(this).data("product_id");
-    const final_id = prod_id ? prod_id : product_id;
-    const $button = $(this);
+  const getAddToCartUrl = ($button, productId, quantity) => {
+    const productUrl = $button.attr("data-product-url") || window.location.href;
+    const targetUrl = new URL(productUrl, window.location.origin);
 
+    if (!targetUrl.searchParams.get("add-to-cart")) {
+      targetUrl.searchParams.set("add-to-cart", productId);
+    }
+
+    targetUrl.searchParams.set("quantity", String(quantity));
+    return targetUrl.toString();
+  };
+
+  const switchToNativeAddToCart = ($button, productId, quantity) => {
+    const wooButtonClasses = $button.attr("data-woo-button-classes") || "add_to_cart_button ajax_add_to_cart";
+
+    $button
+      .removeClass("lightbox-zippy-btn zippy-session-add-cart")
+      .addClass(wooButtonClasses)
+      .attr("href", getAddToCartUrl($button, productId, quantity))
+      .attr("data-add-cart", "")
+      .attr("data-quantity", quantity);
+  };
+
+  document.addEventListener(
+    "click",
+    function (event) {
+      const button = event.target.closest(".zippy-home-add-cart.add_to_cart_button");
+      if (!button) {
+        return;
+      }
+
+      const $button = $(button);
+      const productId = getProductId($button);
+      if (!productId) {
+        return;
+      }
+
+      const quantity = getQuantity($button);
+      button.setAttribute("href", getAddToCartUrl($button, productId, quantity));
+      button.setAttribute("data-quantity", String(quantity));
+    },
+    true
+  );
+
+  document.addEventListener("click", async function (event) {
+    const button = event.target.closest(".lightbox-zippy-btn");
+    if (!button) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+
+    const $button = $(button);
+    const final_id = getProductId($button);
+    
     if (!final_id || $button.hasClass("is-loading")) {
       return;
     }
@@ -116,13 +113,23 @@ $(function () {
 
     try {
       const quantity = getQuantity($button);
+      const sessionResponse = await fetchCartSession();
+      const sessionData = sessionResponse?.data || {};
+
+      if (hasOrderSession(sessionData)) {
+        switchToNativeAddToCart($button, final_id, quantity);
+        $button[0].click();
+        return;
+      }
+
       openShippingPopup(final_id, quantity);
     } catch (error) {
-      console.error("Add to cart failed:", error);
+      console.error("Cart session check failed:", error);
+      openShippingPopup(final_id, getQuantity($button));
     } finally {
       $button.removeClass("is-loading");
     }
-  });
+  }, true);
 
   $(document).on("click", ".btn-close-lightbox", function () {
     $(".mfp-close").trigger("click");
