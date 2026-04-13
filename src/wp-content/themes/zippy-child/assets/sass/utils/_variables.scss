@@ -139,6 +139,16 @@ $spacers: (
   --radius-md: 16px;
   --radius-sm: 8px;
 
+  /* Fluid Typography */
+  --fs-display: clamp(48px, 5vw, 60px);
+  --fs-h1: clamp(32px, 3vw, 42px);
+  --fs-h2: clamp(24px, 3vw, 32px);
+  --fs-h3: clamp(20px, 3vw, 24px);
+  --fs-h4: clamp(18px, 3vw, 20px);
+  --fs-body-lg: clamp(16px, 3vw, 18px);
+  --fs-body: 1rem;
+  --fs-sm: clamp(14px, 3vw, 16px);
+
   --shadow: 0 24px 60px rgba(17, 24, 24, 0.08);
   --shadow-soft: 0 16px 40px rgba(17, 24, 24, 0.06);
   --gradient: linear-gradient(135deg, #{$primary} 0%, #{$primary-soft} 100%);

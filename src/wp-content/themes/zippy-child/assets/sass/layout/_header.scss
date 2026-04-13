@@ -45,10 +45,11 @@
 .stuck .header-main {
   background-color: white;
 }
-.nav-top-not-logged-in.icon.button {
+.nav-top-not-logged-in.icon.button,
+.account-login {
   &:hover {
     i {
-      color: var(--white);
+      color: var(--white) !important;
     }
   }
 }
