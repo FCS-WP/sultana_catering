@@ -73,15 +73,6 @@ function zippy_child_loop_add_to_cart_button($product = null)
         return;
     }
 
-    if (!is_existing_shipping()) {
-        printf(
-            '<a class="zippy-shop-add-cart lightbox-zippy-btn" data-product_id="%d" href="#lightbox-zippy-form">%s</a>',
-            esc_attr($product_id),
-            esc_html($product->add_to_cart_text())
-        );
-        return;
-    }
-
     $classes = 'zippy-home-add-cart zippy-shop-add-cart product_type_' . $product->get_type() . ' add_to_cart_button';
 
     if ($product->supports('ajax_add_to_cart')) {
@@ -92,8 +83,20 @@ function zippy_child_loop_add_to_cart_button($product = null)
         $classes .= ' disabled';
     }
 
+    if (!is_existing_shipping()) {
+        printf(
+            '<a href="#lightbox-zippy-form" class="zippy-shop-add-cart lightbox-zippy-btn" data-product_id="%1$d" data-product-id="%1$d" data-product-url="%2$s" data-woo-button-classes="%3$s" aria-label="%4$s" rel="nofollow">%5$s</a>',
+            esc_attr($product_id),
+            esc_url($product->add_to_cart_url()),
+            esc_attr($classes),
+            esc_attr($product->add_to_cart_description()),
+            esc_html($product->add_to_cart_text())
+        );
+        return;
+    }
+
     printf(
-        '<a href="%1$s" data-quantity="1" class="%2$s" data-product_id="%3$d" data-product-id="%3$d" data-product_sku="%4$s" data-product-url="%1$s" data-woo-button-classes="%5$s" aria-label="%6$s" rel="nofollow">%7$s</a>',
+        '<a href="%1$s" data-add-cart data-quantity="1" class="%2$s" data-product_id="%3$d" data-product-id="%3$d" data-product_sku="%4$s" data-product-url="%1$s" data-woo-button-classes="%5$s" aria-label="%6$s" rel="nofollow">%7$s</a>',
         esc_url($product->add_to_cart_url()),
         esc_attr($classes),
         esc_attr($product_id),

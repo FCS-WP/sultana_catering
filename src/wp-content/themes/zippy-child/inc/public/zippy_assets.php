@@ -33,10 +33,16 @@ function zippy_child_enqueue_bundle($slug)
 
     if (file_exists($js_abs_path)) {
         $js_rel_path = "/assets/dist/js/{$slug}.min.js";
+        $dependencies = array('jquery');
+
+        if ($slug === 'app' && class_exists('WooCommerce')) {
+            $dependencies[] = 'flatsome-theme-woocommerce-js';
+        }
+
         wp_enqueue_script(
             "zippy-child-{$slug}-script",
             $theme_uri . $js_rel_path,
-            array('jquery'),
+            $dependencies,
             filemtime($js_abs_path),
             true
         );

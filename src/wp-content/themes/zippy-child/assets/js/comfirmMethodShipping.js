@@ -53,7 +53,7 @@ jQuery(document).ready(function ($) {
   });
 
   $("body").on("added_to_cart", function(event, fragments, cartHash, $button) {
-    if (!$button || !$button.hasClass("zippy-home-add-cart")) {
+    if (!$button || !$button.length || !$button.hasClass("add_to_cart_button")) {
       return;
     }
 

@@ -6,8 +6,8 @@ $(function () {
     return Number.isFinite(quantity) && quantity > 0 ? quantity : 1;
   };
 
-  const hasOrderSession = (sessionData) => {
-    return Boolean(sessionData?.order_mode);
+  const hasKnownOrderSession = () => {
+    return window.zippyHasOrderSession === true;
   };
 
   const getProductId = ($button) => {
@@ -17,40 +17,31 @@ $(function () {
     return prod_id ? prod_id : product_id;
   };
 
-  const fetchCartSession = () => {
-    return $.ajax({
-      url: "/wp-json/zippy-addons/v1/get-cart-session",
-      type: "GET",
-      xhrFields: {
-        withCredentials: true,
-      },
-    });
+  const triggerNativeAddToCart = (button) => {
+    button.dataset.zippyNativeAddToCart = "1";
+    button.click();
   };
 
-  const openShippingPopup = (productId, quantity = 1) => {
+  const setShippingPopupProduct = (productId, quantity = 1) => {
     const $form = $("#lightbox-zippy-form");
 
-    $form.attr("data-product_id", "");
-    $form.attr("data-quantity", "");
+    if (!$form.length) {
+      console.warn("Shipping popup form was not found.");
+      return false;
+    }
 
-    setTimeout(() => {
-      $form.attr("data-product_id", productId);
-      $form.attr("data-quantity", quantity);
-
-      if ($.magnificPopup) {
-        $.magnificPopup.open({
-          items: {
-            src: "#lightbox-zippy-form",
-          },
-          type: "inline",
-        });
-      }
-    }, 10);
+    $form.attr("data-product_id", productId);
+    $form.attr("data-quantity", quantity);
+    return true;
   };
 
   const getAddToCartUrl = ($button, productId, quantity) => {
     const productUrl = $button.attr("data-product-url") || window.location.href;
-    const targetUrl = new URL(productUrl, window.location.origin);
+    let targetUrl = new URL(productUrl, window.location.origin);
+
+    if (targetUrl.origin !== window.location.origin) {
+      targetUrl = new URL(window.location.href);
+    }
 
     if (!targetUrl.searchParams.get("add-to-cart")) {
       targetUrl.searchParams.set("add-to-cart", productId);
@@ -92,43 +83,58 @@ $(function () {
     true
   );
 
-  document.addEventListener("click", async function (event) {
+  document.addEventListener("click", function (event) {
     const button = event.target.closest(".lightbox-zippy-btn");
     if (!button) {
       return;
     }
 
-    event.preventDefault();
-    event.stopPropagation();
-    event.stopImmediatePropagation();
-
     const $button = $(button);
-    const final_id = getProductId($button);
-    
-    if (!final_id || $button.hasClass("is-loading")) {
+    const productId = getProductId($button);
+
+    if (!productId) {
       return;
     }
 
-    $button.addClass("is-loading");
+    const quantity = getQuantity($button);
 
-    try {
-      const quantity = getQuantity($button);
-      const sessionResponse = await fetchCartSession();
-      const sessionData = sessionResponse?.data || {};
-
-      if (hasOrderSession(sessionData)) {
-        switchToNativeAddToCart($button, final_id, quantity);
-        $button[0].click();
-        return;
-      }
-
-      openShippingPopup(final_id, quantity);
-    } catch (error) {
-      console.error("Cart session check failed:", error);
-      openShippingPopup(final_id, getQuantity($button));
-    } finally {
-      $button.removeClass("is-loading");
+    if (hasKnownOrderSession()) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      switchToNativeAddToCart($button, productId, quantity);
+      triggerNativeAddToCart(button);
+      return;
     }
+
+    if (!setShippingPopupProduct(productId, quantity)) {
+      event.preventDefault();
+    }
+  }, true);
+
+  document.addEventListener("click", function (event) {
+    const button = event.target.closest(".add_to_cart_button");
+    if (!button || button.closest(".lightbox-zippy-btn")) {
+      return;
+    }
+
+    if (button.dataset.zippyNativeAddToCart === "1") {
+      delete button.dataset.zippyNativeAddToCart;
+      return;
+    }
+
+    const $button = $(button);
+    const productId = $button.data("product_id") ||
+      $button.attr("data-product_id") ||
+      new URLSearchParams($button.attr("href")?.split("?")[1]).get("add-to-cart");
+
+    if (!productId) {
+      return;
+    }
+
+    const quantity = getQuantity($button);
+    button.setAttribute("href", getAddToCartUrl($button, productId, quantity));
+    button.setAttribute("data-quantity", String(quantity));
   }, true);
 
   $(document).on("click", ".btn-close-lightbox", function () {

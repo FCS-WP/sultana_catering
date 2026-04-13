@@ -13,7 +13,13 @@ function flatsome_custom_quickview_button($atts)
     return ob_get_clean();
   }
 
-  $button = '<div class="cta_add_to_cart"><a class="lightbox-zippy-btn" data-product_id="' . esc_attr($product_id) . '" href="#lightbox-zippy-form">Add</a></div>';
+  $add_to_cart_url = add_query_arg('add-to-cart', $product_id, home_url('/'));
+
+  if (function_exists('is_existing_shipping') && is_existing_shipping()) {
+    $button = '<div class="cta_add_to_cart"><a class="add_to_cart_button ajax_add_to_cart" data-add-cart data-product_id="' . esc_attr($product_id) . '" data-product-id="' . esc_attr($product_id) . '" data-product-url="' . esc_url($add_to_cart_url) . '" href="' . esc_url($add_to_cart_url) . '">Add</a></div>';
+  } else {
+    $button = '<div class="cta_add_to_cart"><a class="lightbox-zippy-btn" data-product_id="' . esc_attr($product_id) . '" data-product-id="' . esc_attr($product_id) . '" data-product-url="' . esc_url($add_to_cart_url) . '" href="#lightbox-zippy-form">Add</a></div>';
+  }
 
   return $button;
 }
@@ -39,12 +45,15 @@ function display_form_shipping_method()
 function script_rule_popup_session()
 {
   $has_status_popup = false;
+  $has_order_session = function_exists('is_existing_shipping') && is_existing_shipping();
 
   if (function_exists('WC') && WC()->session) {
     $has_status_popup = WC()->session->get('status_popup');
   }
 ?>
   <script>
+    window.zippyHasOrderSession = <?php echo wp_json_encode((bool) $has_order_session); ?>;
+
     jQuery(document).ready(function($) {
       <?php if (empty($has_status_popup)) : ?>
         if ($('.quick-view').length > 0) $('.quick-view').hide();
