@@ -97,7 +97,7 @@ use Zippy_Core\Src\User\Zippy_MPDA_Consent;
 use Zippy_Core\Src\User\Zippy_User_Account_Expiry;
 
 use Zippy_Core\Src\Analytics\Zippy_Analytics;
-use Zippy_Core\Src\Woocommerce\Zippy_Woocommerce;
+// use Zippy_Core\Src\Woocommerce\Zippy_Woocommerce;
 
 /**
  *
@@ -116,7 +116,7 @@ Zippy_User_Account_Expiry::get_instance();
 
 Zippy_Analytics::get_instance();
 
-Zippy_Woocommerce::get_instance();
+// Zippy_Woocommerce::get_instance();
 
 
 /**
